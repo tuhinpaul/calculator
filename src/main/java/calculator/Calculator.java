@@ -13,13 +13,8 @@ import java.util.regex.Pattern;
  * @author Tuhin Paul
  */
 public class Calculator {
-	public static final String WRONG_VARIABLE_POSITION = "Wrong variable position";
-	public static final String UNKNOWN_LITERAL_TYPE = "Unkown literal type";
-	public static final String UNDEFINED_VARIABLE = "Undefined variable";
-	public static final String WRONG_NUM_OF_OPERANDS = "Wrong number of operands";
-	public static final String FIRST_LET_OPERAND_SHOULD_BE_VARIABLE = "Leftmost operand of the let construct should be a variable";
-	public static final String UNREACHABLE_CODE_REACHED = "This code should not have been reached.";
-	
+
+	/* Case-sensitive operation names in expression: change here if you want to change them in the expression */
 	public static final String OP_LET  = "let";
 	public static final String OP_ADD  = "add";
 	public static final String OP_SUB  = "sub";
@@ -28,6 +23,20 @@ public class Calculator {
 	public static final String OP_VAR  = "var";
 	public static final String OP_INT  = "int";
 	
+	/* Exception error messages */
+	public static final String WRONG_VARIABLE_POSITION = "Wrong variable position";
+	public static final String UNKNOWN_LITERAL_TYPE = "Unkown literal type";
+	public static final String UNDEFINED_VARIABLE = "Undefined variable";
+	public static final String WRONG_NUM_OF_OPERANDS = "Wrong number of operands";
+	public static final String FIRST_LET_OPERAND_SHOULD_BE_VARIABLE = "Leftmost operand of the let construct should be a variable";
+	public static final String UNREACHABLE_CODE_REACHED = "This code should not have been reached.";
+	public static final String BAD_EXPRESSION = "Bad expression (empty/malformed).";
+
+
+	/**
+	 * Exception showing bad input in expression provided to Calculator.
+	 * @author Tuhin Paul
+	 */
 	@SuppressWarnings("serial")
 	public class BadInputException extends Exception {
 
@@ -36,16 +45,21 @@ public class Calculator {
 		}
 	}
 
+	/**
+	 * Tokenize a string. Empty strings are not tokens.
+	 * @param inStr the input string to tokenize.
+	 * @return the tokens using delimiters: whitespace, comma, and parentheses.
+	 */
 	public String[] tokenize(String inStr) {
 		String[] tokens = new String[0];
 		
 		if (inStr == null) {
-			// TODO: notify about invalid input
+			// TODO: consider invalid input?
 			return tokens;
 		}
 		
 		if(inStr.trim().length() == 0) {
-			// TODO: notify about invalid input
+			// TODO: consider invalid input?
 			return tokens;
 		}
 		
@@ -53,17 +67,26 @@ public class Calculator {
 
 		return tokens;
 	}
-	
-	
-	public double evaluate(String expr) throws BadInputException {
-		
+
+	/**
+	 * Evaluate the expression. The problem specification shows integer output. Therefore, converting the evaluated result to integer.
+	 *
+	 * @param expr the expression to be evaluated.
+	 * @return the evaluated value of the argument.
+	 */
+	public int evaluate(String expr) throws BadInputException {
+		// tokenize input expression:
 		String[] tokens = this.tokenize(expr);
+
+		// token tree object:
 		TokenTree tree = new TokenTree(tokens);
+
+		// evaluate the expression by traversing the token tree:
 		double result = tree.evaluate();
 		
 		// TODO: cleanup tree?
 		
-		return result;
+		return (int)result;
 	}
 
 	
@@ -101,9 +124,21 @@ public class Calculator {
 		}
 		
 		private boolean isNumeric(String literal) {
+
+			/* avoiding Regex check because the specification says that the value should be an int in [Integer.MIN_VALUE, Integer.MAX_VALUE] */
+			try {
+				int intVal = Integer.parseInt(literal);
+				return true;
+			}
+			catch (NumberFormatException ex) {
+				return false;
+			}
+
+			/*
 			// TODO: handle octal/hex numbers
 			String regex = "^[-+]?\\d+(\\.\\d*)?$"; // TODO: does not match .1
 			return doesMatch(regex, literal);
+			*/
 		}
 
 		private void makeTree(Node n) throws BadInputException {
@@ -112,6 +147,8 @@ public class Calculator {
 			// next token:
 			if (topToken == null) {
 				// TODO: what if no more tokens?
+				// It can happen if: 1) empty expression is provided or 2) malformed expression is provided:
+				throw new BadInputException(Calculator.BAD_EXPRESSION); // TODO: add other info to the exception
 			}
 
 			switch(topToken) {
@@ -197,7 +234,12 @@ public class Calculator {
 		private void cleanupTree() {
 			// TODO
 		}
-		
+
+		/**
+		 * Evaluate the tree to compute the result.
+		 * @return result of the expression presented as token tree
+		 * @throws BadInputException
+		 */
 		public double evaluate() throws BadInputException {
 			if(this.root != null) {
 				// cleanup required
