@@ -263,6 +263,11 @@ public class Calculator {
 
 					break;
 			}
+
+			// If tree constructed or there are more nodes in the tokens queue:
+			// throw bad input exception
+			if(n == this.root && this.tokens.size() > 0)
+				throw new BadInputException(Calculator.BAD_EXPRESSION);
 		}
 
 		/**
