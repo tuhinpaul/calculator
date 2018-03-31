@@ -115,11 +115,11 @@ class Node {
 	 * The default constructor sets all properties to null.
 	 * */
 	Node() {
-		opName = null;
-		varName = null;
-		value = null;
+		opName   = null;
+		varName  = null;
+		value    = null;
 		children = null;
-		parent = null;
+		parent   = null;
 	}
 
 	/**
@@ -127,8 +127,10 @@ class Node {
 	 * @return no. of children of this node or 0 if the children data structure is unassigned (i.e., null).
 	 */
 	public int numChildren() {
-		if(children == null)
+		if(children == null) {
+			AppLogger.debug("calling Node.numChildren() when children is null.");
 			return 0;
+		}
 
 		return children.size();
 	}
@@ -141,6 +143,7 @@ class Node {
 	public void appendChild(Node child) {
 		// null check:
 		if(this.children == null) {
+			AppLogger.debug("Node.appendChild() called when children is null.");
 			this.children = new ArrayList<>();
 		}
 		

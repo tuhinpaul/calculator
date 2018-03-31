@@ -5,10 +5,21 @@ import calculator.Calculator.BadInputException;
 import java.util.logging.Logger;
 
 /**
- *
+ * Main class to execute <b>Calculator</b> application.
  * @author Tuhin Paul
  */
 public class Main {
+
+
+	/**
+	 * prints the usage of this application in System.err:
+	 * */
+	public static void printUsage() {
+		System.err.println("Wrong command line arguments were provided. Usage:");
+		System.err.println("calculator.Main \"expression\" [-v OFF|DEBUG|INFO|ERROR]");
+		System.err.println("OR");
+		System.err.println("calculator.Main -v OFF|DEBUG|INFO|ERROR \"expression\"");
+	}
 
 	/**
 	 * @param args the command line arguments
@@ -63,18 +74,24 @@ public class Main {
 			// verbose level could not be set. so log ERROR:
 			AppLogger.error("Wrong command line arguments");
 
-			System.err.println("Wrong command line arguments were provided. Usage:");
-			System.err.println("calculator.Main \"expression\" [-v DEBUG|INFO|ERROR]");
-			System.err.println("OR");
-			System.err.println("calculator.Main -v DEBUG|INFO|ERROR \"expression\"");
+			printUsage();
 		}
 		else {
 
 			if(verboseLevel != null) {
-				AppLogger.setLevel(verboseLevel);
+				if(AppLogger.setLevel(verboseLevel)) {
+					AppLogger.info("Log level was set to " + verboseLevel);
+				}
+				else {
+					AppLogger.error("Wrong log level: " + verboseLevel);
+					AppLogger.debug("Default level of AppLogger.logger not affected due to wrong log level in the command line.");
+					AppLogger.info("Continuing with expression evaluation despite Wrong log level.");
+
+					printUsage();
+				}
 			}
 
-			// there should be an expression here:
+			// an expression should be available here:
 			Calculator calc = new Calculator();
 
 			try {

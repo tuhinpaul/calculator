@@ -15,13 +15,42 @@ import java.util.regex.Pattern;
 public class Calculator {
 
 	/* Case-sensitive operation names in expression: change here if you want to change them in the expression */
+	/**
+	 * let operation
+	 * */
 	public static final String OP_LET  = "let";
+
+	/**
+	 * add operation
+	 * */
 	public static final String OP_ADD  = "add";
+
+	/**
+	 * sub operation
+	 * */
 	public static final String OP_SUB  = "sub";
+
+	/**
+	 * mul operation
+	 * */
 	public static final String OP_MUL  = "mult";
+
+	/**
+	 * div operation
+	 * */
 	public static final String OP_DIV  = "div";
+
+	/**
+	 * indicates a node containing a variable - not an operator actually
+	 * */
 	public static final String OP_VAR  = "var";
+
+	/**
+	 * indicates a node containing an integer - not an operator actually
+	 * */
 	public static final String OP_INT  = "int";
+
+
 	
 	/* Exception error messages */
 	public static final String WRONG_VARIABLE_POSITION = "Wrong variable position";
@@ -56,6 +85,7 @@ public class Calculator {
 		
 		if (inStr == null) {
 			// TODO: consider throwing exception?
+			AppLogger.debug("Calculator.tokenize() called on null.");
 			return tokens;
 		}
 		
@@ -173,7 +203,7 @@ public class Calculator {
 		}
 
 		/**
-		 * construct tree from token queue
+		 * construct tree from token queue using pre-order traversal
 		 * @param n the root node of current subtree
 		 * */
 		private void makeTree(Node n) throws BadInputException {
@@ -313,13 +343,21 @@ public class Calculator {
 		 * @return the evaluated result of the tree rooted at n.
 		 * */
 		private double evaluate(Node n) throws BadInputException {
-			
+
+			// operator name or type of the subtree root
 			String opName = n.getOpName();
-			
+
+			// root children
 			List<Node> children;
+
+			// child 1 if present
 			Node child1;
+			// child 2 if present
 			Node child2;
+			// child 3 if present
 			Node child3;
+
+			// number of children this root node should have:
 			int numDesiredChildren;
 			
 			switch(opName) {
@@ -328,18 +366,23 @@ public class Calculator {
 			case OP_SUB:
 			case OP_MUL:
 			case OP_DIV:
+
+				// let has 3 children, other binary operations have 2:
 				if (opName.equals(OP_LET))
 					numDesiredChildren = 3;
 				else
 					numDesiredChildren = 2;
-				
+
+				// validate number of children
 				children = n.getChildren();
 				if(children.size() != numDesiredChildren)
 					throw new BadInputException(Calculator.WRONG_NUM_OF_OPERANDS + " for " + opName);
 				
 				child1 = children.get(0);
 				child2 = children.get(1);
-				
+
+
+				// recursively evaluate children nodes and compute the result:
 				if(opName.equals(OP_ADD))
 					return this.evaluate(child1) + this.evaluate(child2);
 				else if(opName.equals(OP_SUB))
@@ -356,7 +399,7 @@ public class Calculator {
 					// assign variable value to hash:
 					this.varMap.put(child1.getVarName(), this.evaluate(child2));
 
-					// return the value of child 3:
+					// return the value of child 3 for let:
 					child3 = children.get(2);
 					return this.evaluate(child3);
 				}
@@ -371,9 +414,11 @@ public class Calculator {
 				return this.varMap.get(n.getVarName());
 				
 			case OP_INT:
+				// if this is a number, return it
 				return n.getValue();
-				
+
 			default:
+				// contol here means: unknown literal/operator:
 				throw new BadInputException(Calculator.UNKNOWN_LITERAL_TYPE + ": " + opName);
 			}
 			
