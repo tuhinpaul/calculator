@@ -1,5 +1,7 @@
 target/
 
+.vscode/
+
 !.idea/
 !src/main/main.iml
 !src/test/test.iml

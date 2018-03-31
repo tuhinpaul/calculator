@@ -1,45 +1,31 @@
-**Edit a file, create a new file, and clone from Bitbucket in under 2 minutes**
+#Calculator
 
-When you're done, you can delete the content in this README and update the file with details for others getting started with your repository.
+##Overview
+Depending on whether you use maven to compile or make package, you may have to execute the program slightly differently. If you are making a jar of the code, you need to add that to the classpath.
 
-*We recommend that you open this README in another tab as you perform the tasks below. You can [watch our video](https://youtu.be/0ocf7u76WSo) for a full demo of all the steps in this tutorial. Open the video in a new tab to avoid leaving Bitbucket.*
+## Assumptions
 
----
+#### double vs inte
+The Calculator.TokenTree class actually uses double as the internal datatype to store the result. Finally, the result is casted to int when returned from Calculator.evaluate(). This may create a different result if you considered only integer in the Calculator.TokenTree class. This may happen due to truncation of fractional part in integer division.
 
-## Edit a file
 
-You’ll start by editing this README file to learn how to edit a file in Bitbucket.
+#### Require valid input
+The program will execute on valid input. To be able to handle all sorts of invalid input, the grammar of the expressions has to be analyzed.
 
-1. Click **Source** on the left side.
-2. Click the README.md link from the list of files.
-3. Click the **Edit** button.
-4. Delete the following text: *Delete this line to make a change to the README from Bitbucket.*
-5. After making your change, click **Commit** and then **Commit** again in the dialog. The commit page will open and you’ll see the change you just made.
-6. Go back to the **Source** page.
+#### some invalid inputs will still work
+Because of the way the program was implemented, it will overlook errors in some invalid inputs: such as "add((1,2" and "add(1,2))". This happens because:
 
----
+The program tokenizes the input string. And the form an expression takes after replacing all the delimiters with a single space can actually be represented as a valid expression if you do a pre-order traversal of the transformed expression.
+For example, suppose you are given the expression:
 
-## Create a file
+```
+let a mult 10 2 add a 5
+```
 
-Next, you’ll add a new file to this repository.
+Pre-order traversal of the above tokens will give you a tree, which you can then evaluate using a post-order traversal.
 
-1. Click the **New file** button at the top of the **Source** page.
-2. Give the file a filename of **contributors.txt**.
-3. Enter your name in the empty file space.
-4. Click **Commit** and then **Commit** again in the dialog.
-5. Go back to the **Source** page.
 
-Before you move on, go ahead and explore the repository. You've already seen the **Source** page, but check out the **Commits**, **Branches**, and **Settings** pages.
+##Notes for further improvement
 
----
-
-## Clone a repository
-
-Use these steps to clone from SourceTree, our client for using the repository command-line free. Cloning allows you to work on your files locally. If you don't yet have SourceTree, [download and install first](https://www.sourcetreeapp.com/). If you prefer to clone from the command line, see [Clone a repository](https://confluence.atlassian.com/x/4whODQ).
-
-1. You’ll see the clone button under the **Source** heading. Click that button.
-2. Now click **Check out in SourceTree**. You may need to create a SourceTree account or log in.
-3. When you see the **Clone New** dialog in SourceTree, update the destination path and name if you’d like to and then click **Clone**.
-4. Open the directory you just created to see your repository’s files.
-
-Now that you're more familiar with your Bitbucket repository, go ahead and add a new file locally. You can [push your change back to Bitbucket with SourceTree](https://confluence.atlassian.com/x/iqyBMg), or you can [add, commit,](https://confluence.atlassian.com/x/8QhODQ) and [push from the command line](https://confluence.atlassian.com/x/NQ0zDQ).
+### Cleaning up token tree
+Not cleaning up the tree will not be a problem for a small program like this. However, if the program is processing giga bytes of data and creating data structures to store them temporarily, it may cause memory leak as gc may not free the memory by the time the program runs out of available memory. Although I am not implementing cleanup right now, the way to clean up will be as follows: do a post order traversal of the tree and clear the data in a node at the end of visiting the subtree rooted at that node.
