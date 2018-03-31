@@ -28,6 +28,20 @@ public class AppLogger {
 	private static String logFileName = "calculator.log";
 
 
+	/**
+	 * whether to log to console instead of filesystem.
+	 * */
+	private static boolean shouldLogToConsoleOnly = false;
+
+
+	/**
+	 * whether to log to console instead of filesystem.
+	 * */
+	public static void LogToConsoleOnly(boolean consoleOnly) {
+		shouldLogToConsoleOnly = consoleOnly;
+	}
+
+
 
 	/**
 	 * Custom simple formatter
@@ -61,6 +75,7 @@ public class AppLogger {
 		if(name == null)
 			return AppLogger.getAppLogger(AppLogger.class.getName());
 
+//		LogManager.getLogManager().getLogger(name).setLevel(Level.ALL);
 
 		Logger logger;
 
@@ -77,7 +92,8 @@ public class AppLogger {
 			logger = Logger.getLogger(name);
 
 		// set file handler for logger
-		Handler fileHandler = null;
+		Handler logDestHandler = null;
+
 		try {
 			// get rid of previous handlers
 			Handler[] prevHandlers = logger.getHandlers();
@@ -86,19 +102,31 @@ public class AppLogger {
 				h.close();
 			}
 
-			// mkdir logs directory if not existent
-			new File(logFileDir).mkdirs();
-			// relative log file path
-			String logFileRelativePath = logFileDir + "/" + logFileName;
-			// log to file
-			fileHandler = new FileHandler(logFileRelativePath, true);
+			// if logs should be sent to console OR file
+			if(shouldLogToConsoleOnly) {
+				// send logs to console only
+				logDestHandler = new ConsoleHandler();
+			}
+			else {
+				// send logs to filesystem only
+
+				// mkdir logs directory if not existent
+				File dir = new File(logFileDir);
+				dir.mkdirs();
+
+				// relative log file path
+				String logFileRelativePath = logFileDir + "/" + logFileName;
+				// log to file
+				logDestHandler = new FileHandler(logFileRelativePath, true);
+			}
+
 
 			//custom log text formatter
 			Formatter formatter = new MyFormatter();
-			fileHandler.setFormatter(formatter);
+			logDestHandler.setFormatter(formatter);
 
 			// add handler to logger
-			logger.addHandler(fileHandler);
+			logger.addHandler(logDestHandler);
 
 		}
 		catch (IOException ex) {
@@ -176,16 +204,19 @@ public class AppLogger {
 	}
 
 	/**
-	 * Get the file name, line number, classname, and method name of the method that issued the log request.
-	 * @return the file name, line number, classname, and method name of the method that issued the log request.
+	 * Get the line number, classname, and method name of the method that issued the log request.
+	 * @return the line number, classname, and method name of the method that issued the log request.
 	 * */
 	public static String getLogIssuerInfo() {
 
 		int issuerIndex = 3;
 
-		String classNameFull = Thread.currentThread().getStackTrace()[issuerIndex].getClassName();
-		String methodName    = Thread.currentThread().getStackTrace()[issuerIndex].getMethodName();
-		int    lineNumber    = Thread.currentThread().getStackTrace()[issuerIndex].getLineNumber();
+		StackTraceElement[] fullTrace = Thread.currentThread().getStackTrace();
+		StackTraceElement trace = fullTrace[issuerIndex];
+
+		String classNameFull = trace.getClassName();
+		String methodName    = trace.getMethodName();
+		int    lineNumber    = trace.getLineNumber();
 
 		return classNameFull + "." + methodName + "():" + lineNumber;
 	}
