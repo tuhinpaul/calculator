@@ -11,7 +11,7 @@ import java.util.logging.*;
 public class AppLogger {
 
 	/**
-	 * logger
+	 * logger used by the logging methods in this class
 	 */
 	private static Logger logger;
 
@@ -27,7 +27,7 @@ public class AppLogger {
 
 
 	/**
-	 * get a logger for the name provided
+	 * Get a logger for the name provided. If the name is the same as this class name, AppLogger.logger is returned.
 	 * @param name logger name. Should not be null but don't raise error- use this class name as default.
 	 * @return the logger with the given name
 	 * */
@@ -40,13 +40,16 @@ public class AppLogger {
 
 		Logger logger;
 
+		// If the name is the same as this class name, return AppLogger.logger
 		if(name.equals(AppLogger.class.getName())) {
+			// instantiate AppLogger.logger if necessary
 			if (AppLogger.logger == null) {
 				AppLogger.logger = Logger.getLogger(name);
 			}
+
 			logger = AppLogger.logger;
 		}
-		else
+		else // create/get logger for the other name provided
 			logger = Logger.getLogger(name);
 
 		// set file handler for logger
@@ -81,11 +84,18 @@ public class AppLogger {
 		return logger;
 	}
 
+	/**
+	 * Logger with the name of this class's name - shared by logging methods (error(), info(), debug(), closeHandlers()) in this class.
+	 * */
 	public static Logger getAppLogger() {
 		return AppLogger.getAppLogger(AppLogger.class.getName());
 	}
 
 
+
+	/**
+	 * close the handlers associated with AppLogger.logger
+	 * */
 	public static void closeHandlers() {
 		if (logger != null) {
 			// close handlers
