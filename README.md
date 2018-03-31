@@ -1,6 +1,8 @@
-#Calculator Program
+[![Build Status](https://travis-ci.org/tuhinpaul/calculator.svg?branch=master)](https://travis-ci.org/tuhinpaul/calculator)
 
-##Overview
+# Calculator Program
+
+## Overview
 Depending on whether you use maven to compile or make package, you may have to execute the program slightly differently. If you are making a jar of the code, you need to add that to the classpath.
 
 The solution has **three phases**:
@@ -59,7 +61,7 @@ You may instead call AppLogger.getAppLogger(String name) to get a java.util.Logg
 
 --------------
 
-##Notes on Further Improvement
+## Notes on Further Improvement
 
 #### Cleaning up token tree
 Not cleaning up the tree will not be a problem for a small program like this. However, if the program is processing giga bytes of data and creating data structures to store them temporarily, it may cause memory leak as gc may not free the memory by the time the program runs out of available memory. Although I am not implementing cleanup right now, the way to clean up will be as follows: do a post order traversal of the tree and clear the data in a node at the end of visiting the subtree rooted at that node.
