@@ -11,6 +11,11 @@ import java.util.logging.*;
 public class AppLogger {
 
 	/**
+	 * logger
+	 */
+	private static Logger logger;
+
+	/**
 	 * The log file directory
 	 */
 	private static String logFileDir = "logs";
@@ -32,7 +37,17 @@ public class AppLogger {
 		if(name == null)
 			return AppLogger.getAppLogger(AppLogger.class.getName());
 
-		Logger logger = Logger.getLogger(name);
+
+		Logger logger;
+
+		if(name.equals(AppLogger.class.getName())) {
+			if (AppLogger.logger == null) {
+				AppLogger.logger = Logger.getLogger(name);
+			}
+			logger = AppLogger.logger;
+		}
+		else
+			logger = Logger.getLogger(name);
 
 		// set file handler for logger
 		Handler fileHandler = null;
@@ -41,6 +56,7 @@ public class AppLogger {
 			Handler[] prevHandlers = logger.getHandlers();
 			for(Handler h: prevHandlers) {
 				logger.removeHandler(h);
+				h.close();
 			}
 
 			new File(logFileDir).mkdirs();
@@ -69,6 +85,18 @@ public class AppLogger {
 		return AppLogger.getAppLogger(AppLogger.class.getName());
 	}
 
+
+	public static void closeHandlers() {
+		if (logger != null) {
+			// close handlers
+			Handler[] prevHandlers = logger.getHandlers();
+			for(Handler h: prevHandlers) {
+				logger.removeHandler(h);
+				h.close();
+			}
+		}
+	}
+
 	/**
 	 * Don't allow instantiation
 	 */
@@ -77,9 +105,32 @@ public class AppLogger {
 
 
 	/**
-	 * Log using Level.INFO and default logger name
+	 * Sets verbose layer of the logger shared by info(), errror() and debug() methods of this class.
+	 * @param level should be the command line verbose level provided to the main application.
+	 * */
+	public static void setLevel(String level) {
+		String lvl = level.toLowerCase();
+
+		Logger logger = getAppLogger();
+
+		if(lvl.equals("debug")) {
+			logger.setLevel(Level.FINEST);
+		}
+		else if(lvl.equals("info")) {
+			logger.setLevel(Level.INFO);
+		}
+		else if(lvl.equals("error")) {
+			logger.setLevel(Level.SEVERE);
+		}
+		else {
+			// verbose level could not be set. so log ERROR:
+			info("Wrong verbose level: " + level);
+		}
+	}
+
+	/**
+	 * Log using Level.INFO and default logger name. You may instead call AppLogger.getAppLogger(String name) to get a java.util.Logger instance with the name of the class where you are logging. Then you may use any of the java.util.logging.Level levels.
 	 * @param info message to log
-	 * @deprecated Use AppLogger.getAppLogger(...) to get a java.util.Logger instance with the name of the class where you are logging. Then use any of the java.util.logging.Level levels.
 	 * */
 	public static void info(String info) {
 		// use the default logger name
@@ -90,9 +141,8 @@ public class AppLogger {
 	}
 
 	/**
-	 * Log using Level.SEVERE and default logger name
+	 * Log using Level.SEVERE and default logger name. You may instead call AppLogger.getAppLogger(String name) to get a java.util.Logger instance with the name of the class where you are logging. Then you may use any of the java.util.logging.Level levels.
 	 * @param err message to log
-	 * @deprecated Use AppLogger.getAppLogger(...) to get a java.util.Logger instance with the name of the class where you are logging. Then use any of the java.util.logging.Level levels.
 	 * */
 	public static void error(String err) {
 		// use the default logger name
@@ -103,15 +153,14 @@ public class AppLogger {
 	}
 
 	/**
-	 * Log using Level.FINE and default logger name
+	 * Log using Level.FINEST and default logger name. You may instead call AppLogger.getAppLogger(String name) to get a java.util.Logger instance with the name of the class where you are logging. Then you may use any of the java.util.logging.Level levels.
 	 * @param debugInfo message to log
-	 * @deprecated Use AppLogger.getAppLogger(...) to get a java.util.Logger instance with the name of the class where you are logging. Then use any of the java.util.logging.Level levels.
 	 * */
 	public static void debug(String debugInfo) {
 		// use the default logger name
 		Logger logger = getAppLogger();
 
-		// use Level.FINE for debug information
-		logger.log(Level.FINE, debugInfo);
+		// use Level.FINEST for debug information
+		logger.log(Level.FINEST, debugInfo);
 	}
 }

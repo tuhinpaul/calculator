@@ -26,7 +26,14 @@ Pre-order traversal of the above tokens will give you a tree, which you can then
 
 
 #### Logging Layer
-Java provides with Logging service with seven severity levels. What I did in AppLogger.java is to assign the same log directory/filename, and log format for handling all logs. I added three methods to the AppLogger class: info(), error(), and debug(). These methods pertain to the Log levels mentioned in the specification. However, I marked them deprecated because, it would be better to get a java.util.logging.Logger by calling AppLogger.getAppLogger() and then to call appropriate logging method on the java.util.logging.Logger instance.
+
+I am saving logs in the filesystem. Program outputs are shown to console using System.out and sometimes System.err (e.g., usage of Main program).
+
+Java provides with Logging service with seven severity levels. What I did in AppLogger.java is to assign the same log directory/filename, and log format for handling all logs.
+
+I added three methods to the AppLogger class: info(), error(), and debug(). These methods pertain to the Log levels mentioned in the specification. These methods use a common logger. AppLogger class provides a setLevel(string) method that sets the verbose level of the common logger.
+
+You may instead call AppLogger.getAppLogger(String name) to get a java.util.Logger instance with the name of the class where you are logging. Then you may use any of the java.util.logging.Level levels.
 
 
 ##Notes for further improvement
