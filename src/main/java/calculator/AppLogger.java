@@ -2,6 +2,8 @@ package calculator;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.GregorianCalendar;
 import java.util.logging.*;
 
 /**
@@ -25,6 +27,28 @@ public class AppLogger {
 	 */
 	private static String logFileName = "calculator.log";
 
+
+
+	/**
+	 * Custom simple formatter
+	 * @author Tuhin Paul
+	 * Assumption: log record message will contain fullClassname.methodName():lineNum<b>newline</b>message
+	 * */
+	public static class MyFormatter extends Formatter {
+
+		/**
+		 * format log record
+		 * */
+		@Override
+		public String format(final LogRecord record) {
+			// return YYYY-MM-dd hh::mm::ss.sss LogLevel message newline newline
+			// note assumption at the description of this class.
+			return String.format("%1$tF %1$tT.%1$tL %2$s %3$s%0$n%0$n",
+					new GregorianCalendar(),
+					record.getLevel().getName(),
+					formatMessage(record));
+		}
+	}
 
 	/**
 	 * Get a logger for the name provided. If the name is the same as this class name, AppLogger.logger is returned.
@@ -62,13 +86,16 @@ public class AppLogger {
 				h.close();
 			}
 
+			// mkdir logs directory if not existent
 			new File(logFileDir).mkdirs();
+			// relative log file path
 			String logFileRelativePath = logFileDir + "/" + logFileName;
+			// log to file
 			fileHandler = new FileHandler(logFileRelativePath, true);
 
-			//plain text formatter
-			Formatter plainTextFormatter = new SimpleFormatter();
-			fileHandler.setFormatter(plainTextFormatter);
+			//custom log text formatter
+			Formatter formatter = new MyFormatter();
+			fileHandler.setFormatter(formatter);
 
 			// add handler to logger
 			logger.addHandler(fileHandler);
@@ -117,8 +144,9 @@ public class AppLogger {
 	/**
 	 * Sets verbose layer of the logger shared by info(), errror() and debug() methods of this class.
 	 * @param level should be the command line verbose level provided to the main application.
+	 * @return if log level was set properly
 	 * */
-	public static void setLevel(String level) {
+	public static boolean setLevel(String level) {
 		String lvl = level.toLowerCase();
 
 		Logger logger = getAppLogger();
@@ -132,22 +160,50 @@ public class AppLogger {
 		else if(lvl.equals("error")) {
 			logger.setLevel(Level.SEVERE);
 		}
+		else if(lvl.equals("off")) {
+			logger.setLevel(Level.OFF);
+		}
 		else {
 			// verbose level could not be set. so log ERROR:
 			info("Wrong verbose level: " + level);
+
+			// log level was not set properly:
+			return false;
 		}
+
+		// all ok
+		return true;
 	}
+
+	/**
+	 * Get the file name, line number, classname, and method name of the method that issued the log request.
+	 * @return the file name, line number, classname, and method name of the method that issued the log request.
+	 * */
+	public static String getLogIssuerInfo() {
+
+		int issuerIndex = 3;
+
+		String classNameFull = Thread.currentThread().getStackTrace()[issuerIndex].getClassName();
+		String methodName    = Thread.currentThread().getStackTrace()[issuerIndex].getMethodName();
+		int    lineNumber    = Thread.currentThread().getStackTrace()[issuerIndex].getLineNumber();
+
+		return classNameFull + "." + methodName + "():" + lineNumber;
+	}
+
 
 	/**
 	 * Log using Level.INFO and default logger name. You may instead call AppLogger.getAppLogger(String name) to get a java.util.Logger instance with the name of the class where you are logging. Then you may use any of the java.util.logging.Level levels.
 	 * @param info message to log
 	 * */
 	public static void info(String info) {
+
+		String msg = String.format( "%1$s%0$n%2$s", getLogIssuerInfo(), info);
+
 		// use the default logger name
 		Logger logger = getAppLogger();
 
 		// level.INFO for information
-		logger.log(Level.INFO, info);
+		logger.log(Level.INFO, msg);
 	}
 
 	/**
@@ -155,11 +211,14 @@ public class AppLogger {
 	 * @param err message to log
 	 * */
 	public static void error(String err) {
+
+		String msg = String.format( "%1$s%0$n%2$s", getLogIssuerInfo(), err);
+
 		// use the default logger name
 		Logger logger = getAppLogger();
 
 		// use SEVERE level for errors
-		logger.log(Level.SEVERE, err);
+		logger.log(Level.SEVERE, msg);
 	}
 
 	/**
@@ -167,10 +226,13 @@ public class AppLogger {
 	 * @param debugInfo message to log
 	 * */
 	public static void debug(String debugInfo) {
+
+		String msg = String.format( "%1$s%0$n%2$s", getLogIssuerInfo(), debugInfo);
+
 		// use the default logger name
 		Logger logger = getAppLogger();
 
 		// use Level.FINEST for debug information
-		logger.log(Level.FINEST, debugInfo);
+		logger.log(Level.FINEST, msg);
 	}
 }
