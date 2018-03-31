@@ -25,6 +25,10 @@ let a mult 10 2 add a 5
 Pre-order traversal of the above tokens will give you a tree, which you can then evaluate using a post-order traversal.
 
 
+#### Logging Layer
+Java provides with Logging service with seven severity levels. What I did in AppLogger.java is to assign the same log directory/filename, and log format for handling all logs. I added three methods to the AppLogger class: info(), error(), and debug(). These methods pertain to the Log levels mentioned in the specification. However, I marked them deprecated because, it would be better to get a java.util.logging.Logger by calling AppLogger.getAppLogger() and then to call appropriate logging method on the java.util.logging.Logger instance.
+
+
 ##Notes for further improvement
 
 ### Cleaning up token tree
