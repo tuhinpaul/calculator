@@ -3,8 +3,6 @@
   <component name="ChangeListManager">
     <list default="true" id="2dbe50f0-8123-48f0-9ca2-1039d1b6a052" name="Default" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/calculator/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/calculator/Main.java" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -20,28 +18,37 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="AppLogger.java" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/src/main/java/calculator/AppLogger.java">
+      <file leaf-file-name="Main.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/calculator/Main.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="621">
-              <caret line="108" selection-start-line="108" selection-end-line="108" />
+            <state relative-caret-position="35">
+              <caret line="73" selection-start-line="73" selection-end-line="73" />
               <folding>
                 <element signature="imports" expanded="true" />
-                <element signature="e#1464#1465#0" expanded="true" />
-                <element signature="e#1527#1528#0" expanded="true" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Main.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/calculator/Main.java">
+      <file leaf-file-name="AppLogger.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/calculator/AppLogger.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="86">
-              <caret line="16" lean-forward="true" selection-start-line="16" selection-end-line="16" />
+            <state relative-caret-position="222">
+              <caret line="113" selection-start-line="113" selection-end-line="113" />
               <folding>
                 <element signature="imports" expanded="true" />
+                <element signature="e#1681#1682#0" expanded="true" />
+                <element signature="e#1744#1745#0" expanded="true" />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Calculator.java" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/main/java/calculator/Calculator.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="-351">
+              <caret line="285" column="25" lean-forward="true" selection-start-line="285" selection-start-column="25" selection-end-line="285" selection-end-column="25" />
             </state>
           </provider>
         </entry>
@@ -75,7 +82,6 @@
         <option value="$PROJECT_DIR$/pom.xml" />
         <option value="$PROJECT_DIR$/README.md" />
         <option value="$PROJECT_DIR$/.gitignore" />
-        <option value="$PROJECT_DIR$/src/main/java/calculator/Calculator.java" />
         <option value="$PROJECT_DIR$/src/main/java/calculator/Node.java" />
         <option value="$PROJECT_DIR$/src/test/java/calculator/AppTest.java" />
         <option value="$PROJECT_DIR$/src/test/java/calculator/CalculatorTest.java" />
@@ -83,10 +89,11 @@
         <option value="$PROJECT_DIR$/src/test/java/calculator/MainTest.java" />
         <option value="$PROJECT_DIR$/src/main/java/calculator/Main.java" />
         <option value="$PROJECT_DIR$/src/main/java/calculator/AppLogger.java" />
+        <option value="$PROJECT_DIR$/src/main/java/calculator/Calculator.java" />
       </list>
     </option>
   </component>
-  <component name="ProjectFrameBounds" extendedState="7">
+  <component name="ProjectFrameBounds" extendedState="6">
     <option name="x" value="260" />
     <option name="y" value="24" />
     <option name="width" value="1400" />
@@ -171,7 +178,8 @@
     <configuration name="Main" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="calculator.Main" />
       <module name="main" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="PROGRAM_PARAMETERS" value="&quot;add(1,2) d&quot; -v INFO" />
+      <option name="WORKING_DIRECTORY" value="file://$PROJECT_DIR$" />
       <extension name="coverage">
         <pattern>
           <option name="PATTERN" value="calculator.*" />
@@ -313,11 +321,11 @@
       <listeners />
     </configuration>
     <list>
+      <item itemvalue="Application.Main" />
       <item itemvalue="JUnit.TokenTreeTest.testConstructorWithEmptyArr" />
       <item itemvalue="JUnit.TokenTreeTest.testLiteralCheck" />
       <item itemvalue="JUnit.TokenTreeTest.testNumericCheck" />
       <item itemvalue="JUnit.MainTest.testMainWithBadExpressionsThatWork" />
-      <item itemvalue="Application.Main" />
     </list>
     <recent_temporary>
       <list>
@@ -375,8 +383,7 @@
     </history-entry>
   </component>
   <component name="ToolWindowManager">
-    <frame x="-3" y="0" width="1926" height="1052" extended-state="7" />
-    <editor active="true" />
+    <frame x="-3" y="0" width="1926" height="1052" extended-state="6" />
     <layout>
       <window_info anchor="right" id="Palette" order="3" />
       <window_info anchor="bottom" id="TODO" order="6" />
@@ -387,7 +394,7 @@
       <window_info anchor="bottom" id="Event Log" order="7" side_tool="true" />
       <window_info anchor="right" id="Maven Projects" order="3" />
       <window_info anchor="bottom" id="Version Control" order="7" />
-      <window_info anchor="bottom" id="Run" order="2" weight="0.32979852" />
+      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.32979852" />
       <window_info anchor="bottom" id="Terminal" order="7" />
       <window_info id="Capture Tool" order="2" />
       <window_info id="Designer" order="2" />
@@ -420,7 +427,7 @@
           <option name="timeStamp" value="4" />
         </line-breakpoint>
       </breakpoints>
-      <option name="time" value="5" />
+      <option name="time" value="7" />
     </breakpoint-manager>
   </component>
   <component name="editorHistoryManager">
@@ -519,13 +526,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/calculator/Calculator.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-2176">
-          <caret line="25" column="34" lean-forward="true" selection-start-line="25" selection-start-column="34" selection-end-line="25" selection-end-column="34" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/test/java/calculator/AppTest.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="119">
@@ -576,8 +576,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/calculator/Main.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="86">
-          <caret line="16" lean-forward="true" selection-start-line="16" selection-end-line="16" />
+        <state relative-caret-position="35">
+          <caret line="73" selection-start-line="73" selection-end-line="73" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
@@ -586,13 +586,20 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/calculator/AppLogger.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="621">
-          <caret line="108" selection-start-line="108" selection-end-line="108" />
+        <state relative-caret-position="222">
+          <caret line="113" selection-start-line="113" selection-end-line="113" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="e#1464#1465#0" expanded="true" />
-            <element signature="e#1527#1528#0" expanded="true" />
+            <element signature="e#1681#1682#0" expanded="true" />
+            <element signature="e#1744#1745#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/calculator/Calculator.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-351">
+          <caret line="285" column="25" lean-forward="true" selection-start-line="285" selection-start-column="25" selection-end-line="285" selection-end-column="25" />
         </state>
       </provider>
     </entry>
