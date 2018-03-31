@@ -31,6 +31,7 @@ public class Calculator {
 	public static final String FIRST_LET_OPERAND_SHOULD_BE_VARIABLE = "Leftmost operand of the let construct should be a variable";
 	public static final String UNREACHABLE_CODE_REACHED = "This code should not have been reached.";
 	public static final String BAD_EXPRESSION = "Bad expression (empty/malformed).";
+	public static final String INVALID_INPUT = "Invalid input.";
 
 
 	/**
@@ -54,12 +55,12 @@ public class Calculator {
 		String[] tokens = new String[0];
 		
 		if (inStr == null) {
-			// TODO: consider invalid input?
+			// TODO: consider throwing exception?
 			return tokens;
 		}
 		
 		if(inStr.trim().length() == 0) {
-			// TODO: consider invalid input?
+			// TODO: consider throwing exception?
 			return tokens;
 		}
 		
@@ -73,6 +74,7 @@ public class Calculator {
 	 *
 	 * @param expr the expression to be evaluated.
 	 * @return the evaluated value of the argument.
+	 * @throws Calculator.BadInputException
 	 */
 	public int evaluate(String expr) throws BadInputException {
 		// tokenize input expression:
@@ -90,25 +92,58 @@ public class Calculator {
 	}
 
 	
-	
+	/**
+	 * This class constructs a token tree from an array of tokens.
+	 * The tree is evaluated using a post order-traversal.
+	 * @author Tuhin Paul
+	 */
 	class TokenTree {
+		/**
+		 * Store the tokens in a queue to process them in FCFS manner:
+ 		 * */
 		private Queue<String> tokens;
+
+		/**
+		 * Tree root
+		 * */
 		private Node root;
-		// variable values;
+
+		/**
+		 * While post-order traversing the tree, save values of resolved variables in a Hashtable.
+		 */
 		private Hashtable<String, Double> varMap;
-		
-		TokenTree(String[] tokens) {
-			// TODO: check validity of tokens
-			
+
+		/**
+		 * Constructor must take the tokens to initialize the internal queue of tokens.
+		 * @param tokenArr the array of tokens
+		 * */
+		TokenTree(String[] tokenArr) throws BadInputException {
+			// do not allow null for tokens
+			if(tokenArr == null)
+				throw new BadInputException(Calculator.INVALID_INPUT + " The array of tokes can not be null.");
+
 			this.tokens = new LinkedList<String>();
+
 			// assign tokens:
-			this.tokens.addAll(Arrays.asList(tokens));
+			this.tokens.addAll(Arrays.asList(tokenArr));
 			
 			// initialize root:
 			root = new Node();
 		}
 
-		private boolean doesMatch(String regex, String literal) {
+
+		/**
+		 * Check if a literal is a valid variable name where variable name is /[a-zA-Z]+/.
+		 * @param literal the string to check
+		 * @return whether or not the argument literal is a valid variable name (/[a-zA-Z]+/).
+		 * */
+		public boolean isLiteral(String literal) {
+
+			if(literal == null)
+				return false;
+
+			String regex = "^[a-zA-Z]+$";
+
 			// compile the regex
 			Pattern pattern = Pattern.compile(regex);
 
@@ -117,13 +152,14 @@ public class Calculator {
 
 			return matcher.find();
 		}
-		
-		private boolean isLiteral(String literal) {
-			String regex = "^[a-zA-Z]+$";
-			return doesMatch(regex, literal);
-		}
-		
-		private boolean isNumeric(String literal) {
+
+
+		/**
+		 * Checks if a string represent a valid java integer
+		 * @param literal the string to check.
+		 * @return whether or not the argument represents a valid java integer.
+		 * */
+		public boolean isNumeric(String literal) {
 
 			/* avoiding Regex check because the specification says that the value should be an int in [Integer.MIN_VALUE, Integer.MAX_VALUE] */
 			try {
@@ -131,22 +167,20 @@ public class Calculator {
 				return true;
 			}
 			catch (NumberFormatException ex) {
+				//ex.printStackTrace();
 				return false;
 			}
-
-			/*
-			// TODO: handle octal/hex numbers
-			String regex = "^[-+]?\\d+(\\.\\d*)?$"; // TODO: does not match .1
-			return doesMatch(regex, literal);
-			*/
 		}
 
+		/**
+		 * construct tree from token queue
+		 * @param n the root node of current subtree
+		 * */
 		private void makeTree(Node n) throws BadInputException {
 			String topToken = this.tokens.peek();
 
 			// next token:
 			if (topToken == null) {
-				// TODO: what if no more tokens?
 				// It can happen if: 1) empty expression is provided or 2) malformed expression is provided:
 				throw new BadInputException(Calculator.BAD_EXPRESSION); // TODO: add other info to the exception
 			}
@@ -230,13 +264,21 @@ public class Calculator {
 					break;
 			}
 		}
-	
+
+		/**
+		 * Not cleaning up the tree will not be a problem for a small program like this.
+		 * However, if the program is processing giga bytes of data and creating data structures to store them temporarily,
+		 * it may cause memory leak as gc may not free the memory by the time the program runs out of available memory.
+		 *
+		 * Although I am not implementing cleanup right now, the way to clean up will be as follows:
+		 * Do a post order traversal of the tree and clear the data in a node at the end of visiting the subtree rooted at that node.
+		 * */
 		private void cleanupTree() {
 			// TODO
 		}
 
 		/**
-		 * Evaluate the tree to compute the result.
+		 * Evaluates the tree using a post-order traversal to compute the result.
 		 * @return result of the expression presented as token tree
 		 * @throws BadInputException
 		 */
@@ -258,7 +300,13 @@ public class Calculator {
 			// evaluate the tree
 			return this.evaluate(this.root);
 		}
-		
+
+		/**
+		 * Evaluates the tree/subtree rooted at the node provided as the argument.
+		 * Note that this method is not called on the leftmost child of a "let" node because that is a L-value.
+		 * @param n the root of the tree/subtree being evaluated.
+		 * @return the evaluated result of the tree rooted at n.
+		 * */
 		private double evaluate(Node n) throws BadInputException {
 			
 			String opName = n.getOpName();
